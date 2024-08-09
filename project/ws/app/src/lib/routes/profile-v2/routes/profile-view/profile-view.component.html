@@ -337,7 +337,7 @@
                 </div>
                 <div class="flex flex-col" *ngIf="editDetails">
                   <mat-form-field class="profile-form-field">
-                    <input type="email" class="input-text" matInput (keyup)="handleEmpty('primaryEmail')"
+                    <input type="email" class="input-text" maxlength="256" matInput (keyup)="handleEmpty('primaryEmail')"
                       formControlName="primaryEmail" />
                   </mat-form-field>
                   <mat-error class="text-xs" *ngIf="otherDetailsForm.get('primaryEmail').hasError('required') || otherDetailsForm.get('primaryEmail').hasError('pattern')">
