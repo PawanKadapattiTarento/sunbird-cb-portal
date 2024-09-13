@@ -184,7 +184,6 @@ export class CompetencyListComponent implements OnInit, OnDestroy {
             } else {
               eachCourse.issuedCertificates.push(courseDetails)
             }
-
             if ((eachCourse.content.competencies_v5 && eachCourse.content.competencies_v5.length)) {
               const subThemeMapping: any = {}
               eachCourse.content.competencies_v5.forEach((v5Obj: any) => {

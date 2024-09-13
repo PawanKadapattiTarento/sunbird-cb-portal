@@ -8,8 +8,8 @@ import { FormControl, Validators } from '@angular/forms'
 import { HttpErrorResponse } from '@angular/common/http'
 import { MatDialog, MatSnackBar } from '@angular/material'
 import { TranslateService } from '@ngx-translate/core'
-import { Subscription, Observable } from 'rxjs'
-import { share } from 'rxjs/operators'
+import { Subscription, Observable, Subject } from 'rxjs'
+import { share, takeUntil } from 'rxjs/operators'
 import dayjs from 'dayjs'
 // tslint:disable-next-line
 import _ from 'lodash'
@@ -44,6 +44,7 @@ import { AppTocDialogIntroVideoComponent } from '../app-toc-dialog-intro-video/a
 import { ContentRatingV2DialogComponent } from '@sunbird-cb/collection/src/lib/_common/content-rating-v2-dialog/content-rating-v2-dialog.component'
 import { NsCardContent } from '@sunbird-cb/collection/src/lib/card-content-v2/card-content-v2.model'
 import { environment } from 'src/environments/environment'
+import { TimerService } from '../../services/timer.service'
 
 export enum ErrorType {
   internalServer = 'internalServer',
@@ -210,6 +211,10 @@ export class AppTocHomeComponent implements OnInit, OnDestroy, AfterViewChecked,
   // randomlearnAdvisoryObj: any
   // learnAdvisoryDataLength: any
 
+  private destroySubject$ = new Subject<any>()
+  timerUnsubscribe: any
+  timer: any
+
   @HostListener('window:scroll', ['$event'])
   handleScroll() {
     const windowScroll = window.pageYOffset
@@ -260,7 +265,8 @@ export class AppTocHomeComponent implements OnInit, OnDestroy, AfterViewChecked,
     private matSnackBar: MatSnackBar,
     private loadCheckService: LoadCheckService,
     private handleClaimService: HandleClaimService,
-    private resetRatingsService: ResetRatingsService
+    private resetRatingsService: ResetRatingsService,
+    private timerService: TimerService,
   ) {
     this.historyData = history.state
     this.handleBreadcrumbs()
@@ -333,7 +339,7 @@ export class AppTocHomeComponent implements OnInit, OnDestroy, AfterViewChecked,
 
     if (this.route) {
       this.skeletonLoader = true
-      this.routeSubscription = this.route.data.subscribe((data: Data) => {
+      this.routeSubscription = this.route.data.subscribe(async (data: Data) => {
         if (data && data.content && data.content.data && data.content.data.identifier) {
           this.courseID = data.content.data.identifier
           this.skeletonLoader = false
@@ -344,6 +350,14 @@ export class AppTocHomeComponent implements OnInit, OnDestroy, AfterViewChecked,
               this.matSnackBar.open('Unable to fetch content data, due to some error!')
             }
           })
+          const initData = this.tocSvc.initData(data, true)
+          this.content = initData.content
+          if (this.forPreview) {
+            this.tocSvc.contentLoader.next(true)
+            await this.tocSvc.fetchCourseHeirarchy(this.content)
+            this.tocSvc.contentLoader.next(false)
+            this.tocSvc.checkModuleWiseData(this.content)
+          }
           this.initialrouteData = data
           this.banners = data.pageData.data.banners
           this.tocSvc.subtitleOnBanners = data.pageData.data.subtitleOnBanners || false
@@ -434,7 +448,6 @@ export class AppTocHomeComponent implements OnInit, OnDestroy, AfterViewChecked,
       const contentName = this.content.name.trim()
       if (this.content.creatorContacts) {
        this.contentCreatorData =  this.handleParseJsonData(this.content.creatorContacts)
-
       }
       if ((contentName).toLowerCase() === this.dakshtaName.toLowerCase()) {
         this.showBtn = true
@@ -613,6 +626,12 @@ export class AppTocHomeComponent implements OnInit, OnDestroy, AfterViewChecked,
       this.rcElem.BottomPos = this.rcElement.nativeElement.offsetTop + this.rcElement.nativeElement.offsetHeight
       this.rcElem.offSetTop = this.rcElement.nativeElement.offsetTop
     }
+    // Get Time for the batch
+    this.timerUnsubscribe = this.timerService.getTimerData()
+    .pipe(takeUntil(this.destroySubject$))
+    .subscribe((_timer: any) => {
+      this.timer = _timer
+    })
   }
 
   handleBreadcrumbs() {
@@ -774,10 +793,6 @@ export class AppTocHomeComponent implements OnInit, OnDestroy, AfterViewChecked,
 
   private initData(data: Data) {
     const initData = this.tocSvc.initData(data, true)
-    this.content = initData.content
-    if (this.forPreview) {
-      this.tocSvc.checkModuleWiseData(this.content)
-    }
     this.errorCode = initData.errorCode
     switch (this.errorCode) {
       case NsAppToc.EWsTocErrorCode.API_FAILURE: {
@@ -1925,6 +1940,9 @@ export class AppTocHomeComponent implements OnInit, OnDestroy, AfterViewChecked,
     }
     if (this.resumeDataSubscription) {
       this.resumeDataSubscription.unsubscribe()
+    }
+    if (this.timerUnsubscribe) {
+      this.timerUnsubscribe.unsubscribe()
     }
   }
 

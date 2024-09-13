@@ -21,9 +21,11 @@
         </mat-tab>
       </mat-tab-group> -->
       <ng-container *ngIf="isTypeOfCollection">
-        <viewer-viewer-toc [forPreview]="forPreview" [contentData]="hierarchyData" [tocStructure]="tocStructure" [config]="tocConfig"
-        [batchData]="batchData" (hidenav)="minimizeBar()"  [hierarchyMapData]="tocSvc?.hashmap" (pathSetEvent)="updatePathSet($event)">
-        </viewer-viewer-toc>
+        <ng-container *ngIf="!loadAllHierarchyData">
+          <viewer-viewer-toc [forPreview]="forPreview" [contentData]="hierarchyData" [tocStructure]="tocStructure" [config]="tocConfig"
+          [batchData]="batchData" (hidenav)="minimizeBar()"  [hierarchyMapData]="tocSvc?.hashmap" (pathSetEvent)="updatePathSet($event)">
+          </viewer-viewer-toc>
+        </ng-container>
       </ng-container> 
     </mat-sidenav>
 

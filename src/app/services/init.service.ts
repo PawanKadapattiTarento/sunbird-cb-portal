@@ -183,7 +183,10 @@ export class InitService {
         await this.fetchStartUpDetails()
       } else if (path.includes('/public/welcome')) {
         await this.fetchStartUpDetails()
-      }// detail: depends only on userID
+      } else if (window.location.href.includes('editMode=true')  && window.location.href.includes('_rc')) {
+        await this.fetchStartUpDetails()
+      }
+      // detail: depends only on userID
     } catch (e) {
       this.settingsSvc.initializePrefChanges(environment.production)
       this.updateNavConfig()
