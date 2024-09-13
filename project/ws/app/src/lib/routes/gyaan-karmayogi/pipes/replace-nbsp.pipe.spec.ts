@@ -1,8 +1,8 @@
-import { ReplaceNbspPipe } from './replace-nbsp.pipe';
+import { ReplaceNbspPipe } from './replace-nbsp.pipe'
 
 describe('ReplaceNbspPipe', () => {
   it('create an instance', () => {
-    const pipe = new ReplaceNbspPipe();
-    expect(pipe).toBeTruthy();
-  });
-});
+    const pipe = new ReplaceNbspPipe()
+    expect(pipe).toBeTruthy()
+  })
+})

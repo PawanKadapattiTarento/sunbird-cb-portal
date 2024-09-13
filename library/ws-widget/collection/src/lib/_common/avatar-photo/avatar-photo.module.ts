@@ -16,7 +16,7 @@ import { PipeCertificateImageURLModule } from '@sunbird-cb/utils-v2'
     MatMenuModule,
     MatRippleModule,
     WidgetResolverModule,
-    PipeCertificateImageURLModule
+    PipeCertificateImageURLModule,
 ],
   exports: [AvatarPhotoComponent],
   entryComponents: [AvatarPhotoComponent],
