@@ -7,6 +7,7 @@ import { ActivatedRoute, Router } from '@angular/router'
 import { DiscussUtilsService } from '@ws/app/src/lib/routes/discuss/services/discuss-utils.service'
 import { TranslateService } from '@ngx-translate/core'
 import { MatSnackBar } from '@angular/material'
+import moment from 'moment'
 
 const DEFAULT_WEEKLY_DURATION = 300
 const DEFAULT_DISCUSS_DURATION = 600
@@ -81,6 +82,10 @@ export class InsightSideBarComponent implements OnInit {
   surveyForm: any
   isNotMyUser = false
   isIgotOrg = false
+  nwlConfiguration: any
+  canShowNlwCard = false
+  totlaDays: number = 0
+  daysCompleted = 0
   constructor(
     private homePageSvc: HomePageService,
     private configSvc: ConfigurationsService,
@@ -103,10 +108,16 @@ export class InsightSideBarComponent implements OnInit {
       this.homePageData = this.activatedRoute.snapshot.data.pageData.data
       this.learnAdvisoryData = this.activatedRoute.snapshot.data.pageData.data.learnerAdvisory
       this.surveyForm = this.activatedRoute.snapshot.data.pageData.data.surveyForm
+      // Fetch National learning week configurations
+      this.nwlConfiguration = this.activatedRoute.snapshot.data.pageData.data.nationalLearningWeek
+      if (this.nwlConfiguration && this.nwlConfiguration.enabled) {
+        this.getNlwConfig()
+      }
     }
     // console.log(' this.userData--', this.configSvc.unMappedUser,  this.configSvc.unMappedUser.profileDetails.profileStatus)
     this.isNotMyUser = this.configSvc.unMappedUser.profileDetails.profileStatus.toLowerCase() === 'not-my-user' ? true : false
     this.isIgotOrg = this.configSvc.unMappedUser.profileDetails.employmentDetails.departmentName === 'igot' ? true : false
+
     // this.learnAdvisoryDataLength = this.learnAdvisoryData.length
     this.getInsights()
     this.getPendingRequestData()
@@ -125,6 +136,28 @@ export class InsightSideBarComponent implements OnInit {
   //   const randomIndex = Math.floor(Math.random() * this.learnAdvisoryData.length)
   //   this.randomlearnAdvisoryObj = this.learnAdvisoryData[randomIndex]
   // }
+
+
+  getNlwConfig() {
+    const startDate = moment(this.nwlConfiguration.startDate, "DD-MMYYYY")
+    const endDate = moment(this.nwlConfiguration.endDate, "DD-MMYYYY")
+    this.totlaDays = endDate.diff(startDate, 'days')
+    let currentDate = moment()
+    if (currentDate.isBetween(startDate, endDate, null, '[]')) {
+      let daysPassed = currentDate.diff(startDate, 'days');
+      this.canShowNlwCard = true
+      this.daysCompleted = daysPassed
+
+    } else if (currentDate.isBefore(startDate)) {
+      this.canShowNlwCard = false
+    } else if (currentDate.isAfter(endDate)) {
+      let daysPassed = currentDate.diff(endDate, 'days');
+      if (daysPassed == 0) {
+        this.canShowNlwCard = true
+        this.daysCompleted = 6
+      }
+    }
+  }
 
   getInsights() {
     this.profileDataLoading = true
@@ -344,6 +377,21 @@ export class InsightSideBarComponent implements OnInit {
     if (event) {
       this.isLeaderboardExist = event
     }
+  }
+
+  navigateToNationalLearning() {
+    this.events.raiseInteractTelemetry(
+      {
+        type: WsEvents.EnumInteractTypes.CLICK,
+        id: 'national-learning-week',
+      },
+      {},
+      {
+        module: WsEvents.EnumTelemetrymodules.HOME,
+      }
+    )
+
+    this.router.navigateByUrl('app/learn/national-learning-week')
   }
 
   private openSnackbar(primaryMsg: string, duration: number = 5000) {
