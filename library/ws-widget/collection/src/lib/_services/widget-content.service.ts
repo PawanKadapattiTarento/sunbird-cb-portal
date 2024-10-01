@@ -10,6 +10,7 @@ import { NSSearch } from './widget-search.model'
 import _ from 'lodash'
 import {  viewerRouteGenerator } from './viewer-route-util'
 import moment from 'moment'
+import { WidgetUserService } from './widget-user.service'
 // tslint:enable
 
 // TODO: move this in some common place
@@ -67,6 +68,7 @@ export class WidgetContentService {
   constructor(
     private http: HttpClient,
     private configSvc: ConfigurationsService,
+    private userSvc : WidgetUserService
   ) {
   }
 
@@ -470,35 +472,62 @@ export class WidgetContentService {
   userKarmaPoints() {
     return this.http.post<any>(API_END_POINTS.USER_KARMA_POINTS, {})
   }
-
-  getEnrolledData(doId: string) {
-    const enrollmentMapData = JSON.parse(localStorage.getItem('enrollmentMapData') || '{}')
-    const enrolledCourseData = enrollmentMapData[doId]
-    return enrolledCourseData
+  getEnrolledData(userId: any, doId: string) {
+    debugger
+    let enrolledCourseData
+    const queryParams = this.userSvc.getQueryParams(doId)
+    this.userSvc.fetchUserBatchList(userId, queryParams).subscribe((data: any) => {
+      if (data && data.courses && data.courses.length) {
+         enrolledCourseData = data.courses[0]
+       return enrolledCourseData
+      } 
+     
+      })
+      // return enrolledCourseData
+    // const enrollmentMapData = JSON.parse(localStorage.getItem('enrollmentMapData') || '{}')
+    // const enrolledCourseData = enrollmentMapData[doId]
+    // return enrolledCourseData
   }
 
   async getResourseLink(content: any) {
-    const enrolledCourseData: any = this.getEnrolledData(content.identifier)
-    if (enrolledCourseData) {
-      if (enrolledCourseData && enrolledCourseData.content && enrolledCourseData.content.status &&
-        enrolledCourseData.content.status.toLowerCase() !== 'retired') {
-        if (enrolledCourseData.content.courseCategory ===  NsContent.ECourseCategory.BLENDED_PROGRAM ||
-          enrolledCourseData.content.courseCategory ===  NsContent.ECourseCategory.INVITE_ONLY_PROGRAM ||
-          enrolledCourseData.content.courseCategory ===  NsContent.ECourseCategory.MODERATED_PROGRAM ||
-          enrolledCourseData.content.primaryCategory ===  NsContent.EPrimaryCategory.BLENDED_PROGRAM ||
-          enrolledCourseData.content.primaryCategory ===  NsContent.EPrimaryCategory.PROGRAM) {
-            if (!this.isBatchInProgress(enrolledCourseData.batch)) {
-              return this.gotoTocPage(content)
-            }
-            const returnData =  await this.checkForDataToFormUrl(content, enrolledCourseData)
-            return returnData
-        }
-        const data =  await this.checkForDataToFormUrl(content, enrolledCourseData)
-        return data
-      }
-      return ''
+    debugger
+    let userId
+    if (this.configSvc.userProfile) {
+      userId = this.configSvc.userProfile.userId || ''
     }
-    return this.gotoTocPage(content)
+    let enrolledCourseData:any = ''
+    const queryParams = this.userSvc.getQueryParams(content.identifier)
+     this.userSvc.fetchUserBatchList(userId, queryParams).subscribe( async (data: any) => {
+      if (data && data.courses && data.courses.length) {
+         enrolledCourseData = data.courses[0]
+        if (enrolledCourseData) {
+          if (enrolledCourseData && enrolledCourseData.content && enrolledCourseData.content.status &&
+            enrolledCourseData.content.status.toLowerCase() !== 'retired') {
+            if (enrolledCourseData.content.courseCategory ===  NsContent.ECourseCategory.BLENDED_PROGRAM ||
+              enrolledCourseData.content.courseCategory ===  NsContent.ECourseCategory.INVITE_ONLY_PROGRAM ||
+              enrolledCourseData.content.courseCategory ===  NsContent.ECourseCategory.MODERATED_PROGRAM ||
+              enrolledCourseData.content.primaryCategory ===  NsContent.EPrimaryCategory.BLENDED_PROGRAM ||
+              enrolledCourseData.content.primaryCategory ===  NsContent.EPrimaryCategory.PROGRAM) {
+                if (!this.isBatchInProgress(enrolledCourseData.batch)) {
+                  return this.gotoTocPage(content)
+                }
+                const returnData =   await this.checkForDataToFormUrl(content, enrolledCourseData)
+                return returnData
+            }
+            const data =  await this.checkForDataToFormUrl(content, enrolledCourseData)
+            return data
+          }
+          return await this.gotoTocPage(content)
+        }
+        return await this.gotoTocPage(content)
+      } 
+     
+      }
+      
+      )
+
+   
+    // return this.gotoTocPage(content)
   }
   async checkForDataToFormUrl(content: any, enrollData: any) {
     let urlData: any

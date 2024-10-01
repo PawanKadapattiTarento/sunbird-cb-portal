@@ -210,8 +210,14 @@ export class ViewerSecondaryTopBarComponent implements OnInit, OnDestroy {
     this.paramSubscription = this.activatedRoute.queryParamMap.subscribe(async params => {
       this.collectionId = params.get('collectionId') as string
       this.isPreview = params.get('preview') === 'true' ? true : false
-      const enrollList: any = JSON.parse(localStorage.getItem('enrollmentMapData') || '{}')
-      this.currentDataFromEnrollList =  enrollList[this.collectionId]
+      // debugger
+      // const enrollList: any = JSON.parse(localStorage.getItem('enrollmentMapData') || '{}')
+      const enrollList: any = this.activatedRoute.snapshot.data.enrollmentData.data.courses
+      // this.currentDataFromEnrollList =  enrollList[this.collectionId]
+      if (enrollList) {
+        this.currentDataFromEnrollList =  enrollList.find((course: any) => course.contentId === this.collectionId)
+      }
+      
     })
 
     this.viewerDataServiceResourceSubscription = this.viewerDataSvc.changedSubject.subscribe(

@@ -185,8 +185,13 @@ export class ViewerTopBarComponent implements OnInit, OnDestroy, OnChanges {
       this.collectionId = params.get('collectionId') as string
       this.collectionType = params.get('collectionType') as string
       this.isPreview = params.get('preview') === 'true' ? true : false
-      const enrollList: any = JSON.parse(localStorage.getItem('enrollmentMapData') || '{}')
-      this.currentDataFromEnrollList =  enrollList[this.collectionId]
+      // debugger
+      // const enrollList: any = JSON.parse(localStorage.getItem('enrollmentMapData') || '{}')
+      const enrollList: any = this.activatedRoute.snapshot.data.enrollmentData.data.courses
+      if (enrollList) {
+        this.currentDataFromEnrollList =  enrollList.find((course: any) => course.contentId === this.collectionId)
+      }
+      // this.currentDataFromEnrollList =  enrollList[this.collectionId]
       this.getUserRating(false)
     })
 

@@ -171,7 +171,11 @@ export class ViewerComponent implements OnInit, OnDestroy, AfterViewChecked {
     }
 
     if (this.collectionId && this.enrollmentList) {
-      const enrolledCourseData = this.widgetServ.getEnrolledData(this.collectionId)
+      let userId
+    if (this.configSvc.userProfile) {
+      userId = this.configSvc.userProfile.userId || ''
+    }
+      const enrolledCourseData: any = this.widgetServ.getEnrolledData(userId, this.collectionId)
       this.enrolledCourseData = enrolledCourseData
       if (enrolledCourseData && enrolledCourseData.batch) {
         this.batchData = {
@@ -266,7 +270,13 @@ export class ViewerComponent implements OnInit, OnDestroy, AfterViewChecked {
 
     if (this.collectionId) {
       if (!this.forPreview) {
-        const enrollCourseData = JSON.parse((localStorage.getItem('enrollmentMapData') as any))[this.collectionId]
+        // debugger
+        // this.enrollmentList = this.activatedRoute.snapshot.data.enrollmentData.data.courses
+        // const enrollCourseData = this.enrollmentList[this.collectionId]
+        // const enrollCourseData = JSON.parse((localStorage.getItem('enrollmentMapData') as any))[this.collectionId]
+
+        this.enrollmentList = this.activatedRoute.snapshot.data.enrollmentData.data.courses
+        const enrollCourseData = this.enrollmentList.find((course: any) => course.contentId === this.collectionId)
         if (enrollCourseData && (enrollCourseData.completionPercentage === 100 || enrollCourseData.status === 2)) {
           this.downloadCertificate(enrollCourseData)
         }

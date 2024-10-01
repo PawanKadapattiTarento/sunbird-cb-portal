@@ -46,8 +46,19 @@ export class WidgetUserService {
       .get<IUserGroupDetails[]>(API_END_POINTS.FETCH_USER_GROUPS(userId))
       .pipe(catchError(this.handleError))
   }
+  getQueryParams(contentIdentifier: string) {
+    let queryParams = {
+      orgdetails: "orgName,email",
+      licenseDetails: "name,description,url",
+      fields: "contentType,name,channel,mimeType,appIcon,resourceType,identifier,trackable,objectType,organisation,pkgVersion,version,trackable,primaryCategory,posterImage,duration,creatorLogo,avgRating,license,programDuration",
+      batchDetails: `name,endDate,startDate,status,enrollmentType,createdBy,certificates,batchAttributes&courseIds=${contentIdentifier}&cache=false`
+    }
+    return queryParams
+  }
  // tslint:disable-next-line: max-line-length
   fetchUserBatchList(userId: string | undefined, queryParams?: { orgdetails: any, licenseDetails: any, fields: any, batchDetails: any }): Observable<NsContent.ICourse[]> {
+    debugger  
+    //Afzal API 
     let path = ''
     if (queryParams) {
        // tslint:disable-next-line: max-line-length
@@ -60,8 +71,10 @@ export class WidgetUserService {
       Pragma: 'no-cache',
       Expires: '0',
     })
-    if (this.checkStorageData('enrollmentService', 'enrollmentData')) {
-      const result: any =  this.http.get(path, { headers }).pipe(catchError(this.handleError), map(
+    // if (this.checkStorageData('enrollmentService', 'enrollmentData')) {
+
+    // replace from here
+       const result: any =  this.http.get(path, { headers }).pipe( catchError(this.handleError), map(
           (data: any) => {
 
             const coursesData: any = []
@@ -75,22 +88,20 @@ export class WidgetUserService {
               this.storeUserEnrollmentInfo(data.result.userCourseEnrolmentInfo,
                                            data.result.courses.length)
               data.result.courses = coursesData
-              if (data.result.courses.length < 200) {
-                localStorage.removeItem('enrollmentData')
-                this.setTime('enrollmentService')
-                localStorage.setItem('enrollmentData', JSON.stringify(data.result))
-                this.mapEnrollmentData(data.result)
-                return data.result
-              }
             }
-            this.mapEnrollmentData(data.result)
-            return data.result
+            return  data.result
           }
         )
       )
       return result
-    }
-    return this.getData('enrollmentData')
+// replace till here
+
+
+
+
+
+    // }
+    // return this.getData('enrollmentData')
 
   }
 
@@ -300,8 +311,8 @@ export class WidgetUserService {
           enrollData[data.collectionId] = data
       })
     }
-    localStorage.removeItem('enrollmentMapData')
-    localStorage.setItem('enrollmentMapData', JSON.stringify(enrollData))
+    // localStorage.removeItem('enrollmentMapData')
+    // localStorage.setItem('enrollmentMapData', JSON.stringify(enrollData))
   }
   storeUserEnrollmentInfo(enrollmentData: any, enrolledCourseCount: number) {
     const userData = {
