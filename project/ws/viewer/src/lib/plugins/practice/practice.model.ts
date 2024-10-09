@@ -120,6 +120,7 @@ export namespace NSPractice {
   }
 
   export interface IQPaper {
+    response?: any
     questionSet: {
       assessmentType: string,
       lastStatusChangedOn: string
