@@ -14,12 +14,14 @@ import { MobileAppsService } from '../../services/mobile-apps.service'
 import { UserProfileService } from '@ws/app/src/lib/routes/user-profile/services/user-profile.service'
 // import { IUserProfileDetailsFromRegistry } from '@ws/app/src/lib/routes/user-profile/models/user-profile.model'
 import { BtnSettingsService } from '@sunbird-cb/collection'
-
+import { getMessaging, getToken, onMessage } from "firebase/messaging";
+import { environment } from 'src/environments/environment'
 // import { NotificationComponent } from './notification/notification.component'
 
 // const API_END_POINTS = {
 //   fetchProfileById: (id: string) => `/apis/proxies/v8/api/user/v2/read/${id}`,
 // }
+import { AngularFireMessaging } from '@angular/fire/compat/messaging';
 @Component({
   selector: 'ws-home',
   templateUrl: './home.component.html',
@@ -38,6 +40,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
     private userProfileService: UserProfileService,
     private matSnackBar: MatSnackBar,
     private events: EventService,
+    private afMessaging: AngularFireMessaging
   ) { }
   private destroySubject$ = new Subject()
   widgetData = {}
@@ -74,6 +77,9 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
+    this.checkForBackgroundNotification()
+    this.requestPermission();
+    this.listen();
     let isNotMyUser = false
     let isIgotOrg = false
     if (this.configSvc && this.configSvc.unMappedUser
@@ -535,5 +541,35 @@ export class HomeComponent implements OnInit, AfterViewInit {
           this.matSnackBar.open(error.error.text)
         }
       })
-    }
+  }
+
+  checkForBackgroundNotification() {
+    this.afMessaging.messages.subscribe((message:any) => {
+      console.log("New message received", message);
+      // Display custom notifications or perform other actions here
+    });
+  }
+  requestPermission() {
+    const messaging = getMessaging();
+    
+    getToken(messaging, 
+     { vapidKey: environment.firebase.vapidKey}).then(
+       (currentToken) => {
+         if (currentToken) {
+           console.log("Hurraaa!!! we got the token.....");
+           console.log(currentToken);
+         } else {
+           console.log('No registration token available. Request permission to generate one.');
+         }
+     }).catch((err) => {
+        console.log('An error occurred while retrieving token. ', err);
+    });
+  }
+  listen() {
+    const messaging = getMessaging();
+    onMessage(messaging, (payload) => {
+      console.log('Message received. ', payload);
+      // this.message=payload;
+    });
+  }
 }

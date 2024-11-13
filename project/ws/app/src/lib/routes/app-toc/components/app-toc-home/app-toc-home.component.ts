@@ -47,7 +47,7 @@ import { environment } from 'src/environments/environment'
 import { TimerService } from '../../services/timer.service'
 import { MatDialog } from '@angular/material/dialog'
 import { MatSnackBar } from '@angular/material/snack-bar'
-
+declare const smartech:any
 export enum ErrorType {
   internalServer = 'internalServer',
   serviceUnavailable = 'serviceUnavailable',
@@ -382,6 +382,7 @@ export class AppTocHomeComponent implements OnInit, OnDestroy, AfterViewChecked,
           this.initData(data)
         }
       })
+      this.netCoreUserCourseExploreEvent()
     }
 
     this.currentFragment = 'overview'
@@ -580,8 +581,7 @@ export class AppTocHomeComponent implements OnInit, OnDestroy, AfterViewChecked,
       {
         pageIdExt: 'btn-provider',
         module: WsEvents.EnumTelemetrymodules.CONTENT,
-      })
-
+      })      
   }
 
   raiseTelemetry() {
@@ -599,6 +599,7 @@ export class AppTocHomeComponent implements OnInit, OnDestroy, AfterViewChecked,
         pageIdExt: 'btn-acbp-claim',
         module: WsEvents.EnumTelemetrymodules.KARMAPOINTS,
       })
+      
   }
 
   onClickOfClaim(event: any) {
@@ -1963,5 +1964,15 @@ export class AppTocHomeComponent implements OnInit, OnDestroy, AfterViewChecked,
       {
         module: 'Landing Page',
       })
+  }
+
+  netCoreUserCourseExploreEvent() {
+    console.log('this.content', this.content)
+    smartech('identify', this.configSvc.unMappedUser.identifier.trim().toLowerCase() );
+    smartech('dispatch', 'Course', {     
+      'course_id': this.courseID,
+      'course_name': this.content && this.content.name ? this.content.name : '',
+      'course_details': this.content && this.content.description ? this.content.description : ''
+    });
   }
 }

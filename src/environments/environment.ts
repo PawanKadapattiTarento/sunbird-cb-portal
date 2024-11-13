@@ -45,6 +45,17 @@ export const environment: IEnvironment = {
   mdoChannelsBookmarkId: (window as { [key: string]: any })['env']['mdoChannelsBookmarkId'] || '',
   providerDataKey: (window as { [key: string]: any })['env']['providerDataKey'] || '',
   compentencyVersionKey: (window as { [key: string]: any })['env']['compentencyVersionKey'] || '',
+  firebase: {
+    apiKey: "AIzaSyD8hKHYfT-5xuDR7QFtNLSMcg1i9jrrZgg",
+    authDomain: "igot-karmayogi-689be.firebaseapp.com",
+    databaseURL: "https://igot-karmayogi-689be.firebaseio.com",
+    projectId: "igot-karmayogi-689be",
+    storageBucket: "igot-karmayogi-689be.firebasestorage.app",
+    messagingSenderId: "241942387335",
+    appId: "1:241942387335:web:0da83fd1e33496933d7622",
+    measurementId: "G-Y89XX6XG55",
+    vapidKey: "BF11hz1QV8UdZN-6sId1OO7NlcrGtSmJdBmEdD6Lw82X06WlGZp0BmjaannqMJIEf30x2ULgVyf0pmBs41U9SdQ"
+  },
 }
 interface IEnvironment {
   name: string,
@@ -84,7 +95,18 @@ interface IEnvironment {
   spvorgID: number,
   mdoChannelsBookmarkId: string
   providerDataKey: string,
-  compentencyVersionKey: string
+  compentencyVersionKey: string,
+  firebase: {
+    apiKey: string,
+    authDomain: string,
+    databaseURL: string,
+    projectId: string,
+    storageBucket: string,
+    messagingSenderId: string,
+    appId: string,
+    measurementId: string,
+    vapidKey: string
+  }
 }
 
 // import { AnyCnameRecord } from 'dns'

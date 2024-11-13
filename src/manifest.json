@@ -2,5 +2,6 @@
   "related_applications": [{
     "platform": "play",
     "id": "com.igot.karmayogibharat"
-  }]
+  }],
+  "gcm_sender_id": "241942387335"
 }
