@@ -1176,6 +1176,8 @@ export class AppTocHomeComponent implements OnInit, OnDestroy, AfterViewChecked,
         this.autoAssignEnroll()
       }
     }
+
+    this.netCoreUserCourseEnrollEvent()
   }
 
   public autoEnrollCuratedProgram(programType: any, batchData: any) {
@@ -1964,15 +1966,42 @@ export class AppTocHomeComponent implements OnInit, OnDestroy, AfterViewChecked,
       {
         module: 'Landing Page',
       })
+      this.netCoreUserCourseStartEvent()
   }
 
   netCoreUserCourseExploreEvent() {
     console.log('this.content', this.content)
     smartech('identify', this.configSvc.unMappedUser.identifier.trim().toLowerCase() );
-    smartech('dispatch', 'Course', {     
-      'course_id': this.courseID,
+    smartech('dispatch', 'course_view', {     
+      'prid': this.courseID,
+      'image': this.content && this.content.posterImage ? this.content.posterImage : '',
+      'prqt': 1,     
       'course_name': this.content && this.content.name ? this.content.name : '',
-      'course_details': this.content && this.content.description ? this.content.description : ''
+      'course_category': this.content && this.content.courseCategory ? this.content.courseCategory : '',
+      'amount': 0
+    });
+  }
+
+  netCoreUserCourseStartEvent() {
+    console.log('this.content', this.content)
+    smartech('identify', this.configSvc.unMappedUser.identifier.trim().toLowerCase() );
+    smartech('dispatch', 'course_started', {      
+      'course_name': this.content && this.content.name ? this.content.name : '',
+      'course_category': this.content && this.content.courseCategory ? this.content.courseCategory : '',
+      'date': this.content && this.content.lastUpdatedOn ? this.content.lastUpdatedOn : '1999-10-10'
+    });
+  }
+
+  netCoreUserCourseEnrollEvent() {
+    console.log('this.content', this.content)
+    smartech('identify', this.configSvc.unMappedUser.identifier.trim().toLowerCase() );
+    smartech('dispatch', 'course_enrolled', {     
+      'prid': this.courseID,
+      'image': this.content && this.content.posterImage ? this.content.posterImage : '',
+      'prqt': 1,      
+      'course_name': this.content && this.content.name ? this.content.name : '',
+      'course_category': this.content && this.content.courseCategory ? this.content.courseCategory : '',
+      'amount': 0
     });
   }
 }

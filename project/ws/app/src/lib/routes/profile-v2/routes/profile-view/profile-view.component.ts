@@ -34,7 +34,7 @@ import { RejectionReasonPopupComponent } from '../../components/rejection-reason
 import { ConfirmDialogComponent } from '@sunbird-cb/collection/src/lib/_common/confirm-dialog/confirm-dialog.component'
 import { ProfileV2Service } from '../../services/profile-v2.servive'
 import { environment } from 'src/environments/environment'
-
+declare const smartech:any
 export const MY_FORMATS = {
   parse: {
     dateInput: 'LL',
@@ -769,6 +769,8 @@ export class ProfileViewComponent implements OnInit, AfterViewInit, OnDestroy {
       })
     }
 
+    this.netCoreUserUpdateEvent()    
+
     // this.fetchCadreData()
   }
 
@@ -1410,6 +1412,8 @@ export class ProfileViewComponent implements OnInit, AfterViewInit, OnDestroy {
         }
         this.editName = !this.editName
       })
+
+      this.netCoreUserProfileNameUpdateEvent()
   }
 
   async onSubmit() {
@@ -1624,10 +1628,37 @@ export class ProfileViewComponent implements OnInit, AfterViewInit, OnDestroy {
   // isEmailAllowed(email: string): boolean {
   //   const domain = this.extractDomain(email);
   //   return this.approvedDomainList.includes(domain);
+  
   // }
 
   // private extractDomain(email: string): string {
   //   const parts = email.split('@');
   //   return parts.length > 1 ? parts[1] : '';
   // }
+
+  netCoreUserProfileNameUpdateEvent() {
+    console.log('this.content',this.portalProfile )
+    smartech('contact', '2', {
+      'pk^userid': this.configService.unMappedUser.identifier.trim().toLowerCase(),
+      'FIRST_NAME' : this.profileName.trim().toLowerCase(),
+    });
+  }
+
+  netCoreUserUpdateEvent() {
+    console.log('this.content',this.portalProfile )
+    smartech('identify', this.portalProfile.id.trim().toLowerCase() );
+    smartech('dispatch', 'profile_updated', {     
+      'FIRST_NAME' : this.profileName.trim().toLowerCase(),
+      'Employee ID': this.portalProfile.id.trim().toLowerCase(),
+      // 'Email': this.portalProfile.personalDetails.officialEmail.trim().toLowerCase(),
+      'Number': 1,      
+      'Gender': this.portalProfile.personalDetails.gender.trim().toLowerCase(),
+      'Date of Birth': this.portalProfile.personalDetails.dob.trim().toLowerCase(),
+      'Mother Tounge': this.portalProfile.personalDetails.domicileMedium.trim().toLowerCase(),
+      'Category': this.portalProfile.personalDetails.category.trim().toLowerCase(),
+      // 'Office pincode': this.portalProfile.personalDetails.pincode.trim().toLowerCase(),
+      'eHRMS ID/External System ID': this.portalProfile.additionalProperties ? this.portalProfile.additionalProperties?.externalSystemId : '',
+      'Are you a Cadre Employee?': this.portalProfile.personalDetails.isCadre.toString().trim().toLowerCase()
+    });
+  }
 }

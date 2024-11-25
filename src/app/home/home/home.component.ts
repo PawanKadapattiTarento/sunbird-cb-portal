@@ -78,8 +78,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.checkForBackgroundNotification()
-    this.requestPermission();
-    this.listen();
+    // this.requestPermission();
+    // this.listen();
     let isNotMyUser = false
     let isIgotOrg = false
     if (this.configSvc && this.configSvc.unMappedUser

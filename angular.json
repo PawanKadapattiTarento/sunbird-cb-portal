@@ -31,7 +31,6 @@
               "src/fusion-assets/images/",
               "src/dashboard-assets/",
               "src/manifest.json",
-              "src/firebase-messaging-sw.js",
               {
                 "glob": "**/*.*",
                 "input": "./node_modules/@sunbird-cb/discussions-ui-v8/assets",

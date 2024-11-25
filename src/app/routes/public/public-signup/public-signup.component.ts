@@ -18,7 +18,7 @@ import { DomSanitizer } from '@angular/platform-browser'
 import { DialogBoxComponent as ZohoDialogComponent } from '@ws/app/src/lib/routes/profile-v3/components/dialog-box/dialog-box.component'
 import { MatDialog } from '@angular/material/dialog'
 import { MatSnackBar } from '@angular/material/snack-bar'
-
+declare const smartech:any
 // export function forbiddenNamesValidator(optionsArray: any): ValidatorFn {
 //   return (control: AbstractControl): { [key: string]: any } | null => {
 //     if (!optionsArray) {
@@ -820,5 +820,16 @@ export class PublicSignupComponent implements OnInit, OnDestroy {
       }
     }
     webFormxhr.send()
+  }
+
+  netCoreRegistrationEvent() {
+    smartech('dispatch', 'registration', {     
+      'Username': this.registrationForm.value.firstname.trim().toLowerCase(),
+      'Group':this.registrationForm.value.group.trim().toLowerCase(),
+      'Email': this.registrationForm.value.email.trim().toLowerCase(),      
+      'Mobile Number': this.registrationForm.value.mobile.trim().toLowerCase(),
+      'Center/State': this.typeValue,
+      'Oraganization':this.heirarchyObject.sbOrgId,     
+    });
   }
 }
