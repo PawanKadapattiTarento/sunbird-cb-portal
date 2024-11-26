@@ -1679,9 +1679,7 @@ export class ProfileViewComponent implements OnInit, AfterViewInit, OnDestroy {
       'Category': this.portalProfile.personalDetails.category.trim().toLowerCase(),
       // 'Office pincode': this.portalProfile.personalDetails.pincode.trim().toLowerCase(),
       /* tslint:disable */
-      'eHRMS ID/External System ID': this.portalProfile.additionalProperties ? this.portalProfile.additionalProperties?.externalSystemId : '',
-      /* tslint:enable */
-      'Are you a Cadre Employee?': this.portalProfile.personalDetails.isCadre.toString().trim().toLowerCase(),
+      'eHRMS ID/External System ID': this.portalProfile.additionalProperties ? this.portalProfile.additionalProperties?.externalSystemId : ''      
     })
   }
 }
