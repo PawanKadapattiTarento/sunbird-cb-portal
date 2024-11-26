@@ -47,7 +47,7 @@ import { environment } from 'src/environments/environment'
 import { TimerService } from '../../services/timer.service'
 import { MatDialog } from '@angular/material/dialog'
 import { MatSnackBar } from '@angular/material/snack-bar'
-declare const smartech:any
+declare const smartech: any
 export enum ErrorType {
   internalServer = 'internalServer',
   serviceUnavailable = 'serviceUnavailable',
@@ -581,7 +581,7 @@ export class AppTocHomeComponent implements OnInit, OnDestroy, AfterViewChecked,
       {
         pageIdExt: 'btn-provider',
         module: WsEvents.EnumTelemetrymodules.CONTENT,
-      })      
+      })
   }
 
   raiseTelemetry() {
@@ -599,7 +599,7 @@ export class AppTocHomeComponent implements OnInit, OnDestroy, AfterViewChecked,
         pageIdExt: 'btn-acbp-claim',
         module: WsEvents.EnumTelemetrymodules.KARMAPOINTS,
       })
-      
+
   }
 
   onClickOfClaim(event: any) {
@@ -1970,38 +1970,44 @@ export class AppTocHomeComponent implements OnInit, OnDestroy, AfterViewChecked,
   }
 
   netCoreUserCourseExploreEvent() {
+    /* tslint:disable */
     console.log('this.content', this.content)
-    smartech('identify', this.configSvc.unMappedUser.identifier.trim().toLowerCase() );
-    smartech('dispatch', 'course_view', {     
+    /* tslint:enable */
+    smartech('identify', this.configSvc.unMappedUser.identifier.trim().toLowerCase())
+    smartech('dispatch', 'course_view', {
       'prid': this.courseID,
       'image': this.content && this.content.posterImage ? this.content.posterImage : '',
-      'prqt': 1,     
+      'prqt': 1,
       'course_name': this.content && this.content.name ? this.content.name : '',
       'course_category': this.content && this.content.courseCategory ? this.content.courseCategory : '',
-      'amount': 0
-    });
+      'amount': 0,
+    })
   }
 
   netCoreUserCourseStartEvent() {
+    /* tslint:disable */
     console.log('this.content', this.content)
-    smartech('identify', this.configSvc.unMappedUser.identifier.trim().toLowerCase() );
-    smartech('dispatch', 'course_started', {      
+    /* tslint:enable */
+    smartech('identify', this.configSvc.unMappedUser.identifier.trim().toLowerCase())
+    smartech('dispatch', 'course_started', {
       'course_name': this.content && this.content.name ? this.content.name : '',
       'course_category': this.content && this.content.courseCategory ? this.content.courseCategory : '',
-      'date': this.content && this.content.lastUpdatedOn ? this.content.lastUpdatedOn : '1999-10-10'
-    });
+      'date': this.content && this.content.lastUpdatedOn ? this.content.lastUpdatedOn : '1999-10-10',
+    })
   }
 
   netCoreUserCourseEnrollEvent() {
+    /* tslint:disable */
     console.log('this.content', this.content)
-    smartech('identify', this.configSvc.unMappedUser.identifier.trim().toLowerCase() );
-    smartech('dispatch', 'course_enrolled', {     
+    /* tslint:enable */
+    smartech('identify', this.configSvc.unMappedUser.identifier.trim().toLowerCase())
+    smartech('dispatch', 'course_enrolled', {
       'prid': this.courseID,
       'image': this.content && this.content.posterImage ? this.content.posterImage : '',
-      'prqt': 1,      
+      'prqt': 1,
       'course_name': this.content && this.content.name ? this.content.name : '',
       'course_category': this.content && this.content.courseCategory ? this.content.courseCategory : '',
-      'amount': 0
-    });
+      'amount': 0,
+    })
   }
 }

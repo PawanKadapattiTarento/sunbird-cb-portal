@@ -1654,28 +1654,34 @@ export class ProfileViewComponent implements OnInit, AfterViewInit, OnDestroy {
   // }
 
   netCoreUserProfileNameUpdateEvent() {
+    /* tslint:disable */
     console.log('this.content',this.portalProfile )
+    /* tslint:enable */
     smartech('contact', '2', {
       'pk^userid': this.configService.unMappedUser.identifier.trim().toLowerCase(),
       'FIRST_NAME' : this.profileName.trim().toLowerCase(),
-    });
+    })
   }
 
   netCoreUserUpdateEvent() {
+    /* tslint:disable */
     console.log('this.content',this.portalProfile )
-    smartech('identify', this.portalProfile.id.trim().toLowerCase() );
-    smartech('dispatch', 'profile_updated', {     
+    /* tslint:enable */
+    smartech('identify', this.portalProfile.id.trim().toLowerCase())
+    smartech('dispatch', 'profile_updated', {
       'FIRST_NAME' : this.profileName.trim().toLowerCase(),
       'Employee ID': this.portalProfile.id.trim().toLowerCase(),
       // 'Email': this.portalProfile.personalDetails.officialEmail.trim().toLowerCase(),
-      'Number': 1,      
+      'Number': 1,
       'Gender': this.portalProfile.personalDetails.gender.trim().toLowerCase(),
       'Date of Birth': this.portalProfile.personalDetails.dob.trim().toLowerCase(),
       'Mother Tounge': this.portalProfile.personalDetails.domicileMedium.trim().toLowerCase(),
       'Category': this.portalProfile.personalDetails.category.trim().toLowerCase(),
       // 'Office pincode': this.portalProfile.personalDetails.pincode.trim().toLowerCase(),
+      /* tslint:disable */
       'eHRMS ID/External System ID': this.portalProfile.additionalProperties ? this.portalProfile.additionalProperties?.externalSystemId : '',
-      'Are you a Cadre Employee?': this.portalProfile.personalDetails.isCadre.toString().trim().toLowerCase()
-    });
+      /* tslint:enable */
+      'Are you a Cadre Employee?': this.portalProfile.personalDetails.isCadre.toString().trim().toLowerCase(),
+    })
   }
 }

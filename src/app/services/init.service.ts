@@ -154,13 +154,13 @@ export class InitService {
   }
 
   async init() {
-    
+
     if (this.updateProfileSubscription) {
       this.updateProfileSubscription.unsubscribe()
     }
     // to update the profile from user read api
     this.updateProfileSubscription = this.configSvc.updateProfileObservable.subscribe(async (value: boolean) => {
-      if (value) {        
+      if (value) {
         await this.fetchUserDetails()
       }
     })
@@ -409,7 +409,7 @@ export class InitService {
     }
   }
   private async fetchStartUpDetails(): Promise<any> {
-    
+
     // const userRoles: string[] = []
     if (this.configSvc.instanceConfig && !Boolean(this.configSvc.instanceConfig.disablePidCheck)) {
       let userPidProfile: any | null = null
@@ -541,7 +541,7 @@ export class InitService {
   // only change is calling the read api with userID
   // since Backend api is failing if we call the read api twice
   private async fetchUserDetails(): Promise<any> {
-    
+
     if (this.configSvc.unMappedUser.id) {
       let userPidProfile: any | null = null
       try {
@@ -636,7 +636,7 @@ export class InitService {
         this.configSvc.userGroups = new Set(details.group)
         this.configSvc.userRoles = new Set((details.roles || []).map((v: string) => v.toLowerCase()))
         this.configSvc.isActive = details.isActive
-        
+
         return details
       } catch (e) {
         this.configSvc.userProfile = null
@@ -888,14 +888,16 @@ export class InitService {
   }
 
   netCoreUserLoginSetup() {
-    console.log('this.configSvc.unMappedUser',this.configSvc.unMappedUser)
-    console.log('smartech',smartech)
+    /* tslint:disable */
+    console.log('this.configSvc.unMappedUser', this.configSvc.unMappedUser)
+    console.log('smartech', smartech)
+    /* tslint:enable */
     smartech('contact', '2', {
       'pk^userid': this.configSvc.unMappedUser.identifier.trim().toLowerCase(),
       'email': this.configSvc.unMappedUser.profileDetails.personalDetails.primaryEmail.trim().toLowerCase(),
       'FIRST_NAME' : this.configSvc.unMappedUser.profileDetails.personalDetails.firstname.trim().toLowerCase(),
-      //'username': this.configSvc.unMappedUser.profileDetails.personalDetails.firstName.trim().toLowerCase(),
-      'mobile': this.configSvc.unMappedUser.profileDetails.personalDetails.mobile.toString().trim().toLowerCase()
-    });
+      // 'username': this.configSvc.unMappedUser.profileDetails.personalDetails.firstName.trim().toLowerCase(),
+      'mobile': this.configSvc.unMappedUser.profileDetails.personalDetails.mobile.toString().trim().toLowerCase(),
+    })
   }
 }

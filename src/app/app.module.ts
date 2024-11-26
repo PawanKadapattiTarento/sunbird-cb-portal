@@ -162,11 +162,11 @@ import { MatTableModule } from '@angular/material/table'
 import { MatTabsModule } from '@angular/material/tabs'
 import { MatToolbarModule } from '@angular/material/toolbar'
 import { MatTooltipModule } from '@angular/material/tooltip'
-import { initializeApp } from "firebase/app";
-import { AngularFireModule } from "@angular/fire/compat";
+// import { initializeApp } from 'firebase/app'
+// import { AngularFireModule } from '@angular/fire/compat'
 // import { AngularFireAuthModule } from "@angular/fire/compat/auth";
 // import { AngularFireDatabaseModule } from '@angular/fire/compat/database';
-initializeApp(environment.firebase);
+// initializeApp(environment.firebase)
 
 // @Injectable()
 // export class HammerConfig extends GestureConfig {
@@ -347,7 +347,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     }),
     ProfileV3Module,
     MatSidenavModule,
-    AngularFireModule.initializeApp(environment.firebase),  // initialize with firebaseConfig
+    // AngularFireModule.initializeApp(environment.firebase),  // initialize with firebaseConfig
     // AngularFireAuthModule, // if you are using Firebase Auth
     // AngularFireDatabaseModule, // if you are using Firebase Database
   ],
